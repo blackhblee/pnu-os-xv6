@@ -21,5 +21,8 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 
-// My system call number
+// My system call numbers
 #define SYS_getppid 22
+#define SYS_yield   23
+#define SYS_setnice 24
+#define SYS_getnice 25

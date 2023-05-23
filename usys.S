@@ -32,3 +32,6 @@ SYSCALL(uptime)
 
 // My system calls
 SYSCALL(getppid)
+SYSCALL(yield)
+SYSCALL(setnice)
+SYSCALL(getnice)

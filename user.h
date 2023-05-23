@@ -40,3 +40,6 @@ int atoi(const char*);
 
 // My system calls
 int getppid(void);
+void yield(void);
+int setnice(int, int);
+int getnice(int);
