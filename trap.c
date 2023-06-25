@@ -13,6 +13,8 @@ struct gatedesc idt[256];
 extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
+// My lazy page allocation
+int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
 
 void
 tvinit(void)
@@ -46,6 +48,10 @@ trap(struct trapframe *tf)
     return;
   }
 
+  // My lazy page allocation
+  uint myPa;
+  char *myMem;
+
   switch(tf->trapno){
   case T_IRQ0 + IRQ_TIMER:
     if(cpuid() == 0){
@@ -76,6 +82,13 @@ trap(struct trapframe *tf)
     cprintf("cpu%d: spurious interrupt at %x:%x\n",
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
+    break;
+  case T_PGFLT:
+    myPa = rcr2();
+    myPa = PGROUNDDOWN(myPa);
+    myMem = kalloc();
+    memset(myMem, 0, PGSIZE);
+    mappages(myproc()->pgdir, (char*)myPa, PGSIZE, V2P(myMem), PTE_W|PTE_U);
     break;
 
   //PAGEBREAK: 13
